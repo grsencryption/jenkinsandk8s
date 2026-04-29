@@ -1,33 +1,24 @@
-pipeline {
-
-    agent {
-        kubernetes {
-
+pipeline{
+    agent{
+        kubernetes{
             cloud 'kubernetes'
-
-            yaml '''
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: jnlp
-    image: jenkins/inbound-agent:latest
-    tty: true
-'''
+            inheritFrom 'jenkins-agent'
         }
     }
 
-    stages {
+    options{
+        skipDefaultCheckout(true)
+    }
 
-        stage('Verify Agent') {
+    stages{
 
-            steps {
-
-                sh 'echo "Executor Hostname:"'
-                sh 'hostname'
-
-                sh 'echo "Running User:"'
-                sh 'whoami'
+        stage('Executor Attachment proof'){
+            steps{
+                sh '''
+                echo "Executor attached"
+                hostname
+                whoami
+                '''
             }
         }
     }
