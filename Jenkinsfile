@@ -12,7 +12,7 @@ spec:
     image: jenkins/inbound-agent
     args: ['$(JENKINS_SECRET)', '$(JENKINS_NAME)']
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: bitnami/kubectl:1.30.1-debian-12-r0
     command:
     - cat
     tty: true
