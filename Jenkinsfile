@@ -21,5 +21,13 @@ pipeline{
                 '''
             }
         }
+        stage('Cluster Info'){
+            steps{
+                sh '''
+                echo "Cluster Info"
+                kubectl cluster-info
+                '''
+            }
+        }
     }
 }
