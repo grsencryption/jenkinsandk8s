@@ -12,7 +12,7 @@ spec:
     image: jenkins/inbound-agent
     args: ['$(JENKINS_SECRET)', '$(JENKINS_NAME)']
   - name: kubectl
-    image: linkyard/kubectl
+    image: bitnami/kubectl:latest
     command:
     - cat
     tty: true
