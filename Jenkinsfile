@@ -1,19 +1,29 @@
-pipeline{
-    agent{
-        kubernetes{
+pipeline {
+    agent {
+        kubernetes {
             cloud 'kubernetes'
-            inheritFrom 'jenkins-agent'
+            defaultContainer 'kubectl'   // 👈 IMPORTANT FIX
+            yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: jnlp
+    image: jenkins/inbound-agent
+    args: ['$(JENKINS_SECRET)', '$(JENKINS_NAME)']
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command:
+    - cat
+    tty: true
+'''
         }
     }
 
-    options{
-        skipDefaultCheckout(true)
-    }
+    stages {
 
-    stages{
-
-        stage('Executor Attachment proof'){
-            steps{
+        stage('Executor Attachment proof') {
+            steps {
                 sh '''
                 echo "Executor attached"
                 hostname
@@ -21,11 +31,14 @@ pipeline{
                 '''
             }
         }
-        stage('Cluster Info'){
-            steps{
+
+        stage('Cluster Info') {
+            steps {
                 sh '''
-                echo "Cluster Info"
+                echo "Fetching cluster info..."
                 kubectl cluster-info
+                kubectl get nodes
+                kubectl get pods -A
                 '''
             }
         }
